@@ -18,4 +18,6 @@ RUN bash -c "if [ $INSTALL_DEV == 'true' ] ; then poetry install --no-root ; els
 
 COPY /app /app/app
 
+ENV PYTHOPATH="/app:$PYTHONPATH"
+
 CMD ["poetry", "run", "uvicorn", "app.main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]

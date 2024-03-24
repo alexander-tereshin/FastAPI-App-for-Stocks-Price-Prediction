@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-from redis import asyncio as aioredis
 from contextlib import asynccontextmanager
 
 from app.parser.parser_router import router as parser_router
