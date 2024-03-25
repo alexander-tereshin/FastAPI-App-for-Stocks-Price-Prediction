@@ -1,8 +1,10 @@
 from fastapi import APIRouter
 from typing import List
 from datetime import date
+from fastapi_cache.decorator import cache
 
 from app.parser.yahoo_parser import SP500Parser
+
 
 router = APIRouter(prefix="/parser", tags=["Parser"])
 
@@ -10,6 +12,7 @@ parser = SP500Parser()
 
 
 @router.get("/sp500_tickers")
+@cache(expire=3600)
 async def get_sp500_tickers():
     """
     Retrieve the list of S&P 500 company tickers.
@@ -19,6 +22,7 @@ async def get_sp500_tickers():
 
 
 @router.get("/sp500_data")
+@cache(expire=3600)
 async def get_sp500_data(start_date: date, end_date: date):
     """
     Download historical data for S&P 500 companies within the specified date range.

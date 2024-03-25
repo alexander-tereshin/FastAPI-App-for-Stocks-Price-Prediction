@@ -16,7 +16,7 @@ class SP500Parser:
         """
         self.tickers: Optional[List[str]] = None
         self.data: Optional[pd.DataFrame] = None
-        self.cat_features = ['Symbol', 'week_of_year', 'month']
+        self.cat_features = ["Symbol", "week_of_year", "month"]
 
     def get_sp500_tickers(self) -> Optional[List[str]]:
         """
@@ -69,8 +69,8 @@ class SP500Parser:
 
         return self.data
 
-    def download_custom_data(self,
-                             custom_tickers: List[str], start_date: datetime, end_date: datetime
+    def download_custom_data(
+        self, custom_tickers: List[str], start_date: datetime, end_date: datetime
     ) -> pd.DataFrame:
         """
         Downloads historical data for custom companies within the specified date range with 1 day granularity.
@@ -94,7 +94,7 @@ class SP500Parser:
                 .set_index("Date")
             )
         else:
-            data['Symbol'] = custom_tickers[0]
+            data["Symbol"] = custom_tickers[0]
         data.reset_index(inplace=True)
         self.data = data
         return data

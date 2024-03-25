@@ -1,25 +1,28 @@
-import pathlib
-
-from fastapi import APIRouter, HTTPException, Query
 from typing import List
-from datetime import date
+from datetime import datetime, timedelta
 
-from app.config import Config
+from fastapi import APIRouter, HTTPException
+from fastapi_cache.decorator import cache
 
+from app.config import settings
 from app.parser.yahoo_parser import SP500Parser
 from app.predictor.predictor import FinancialPredictor
-from datetime import datetime, timedelta
+
+
+regressor_path = settings.regressor_path
+preprocessor_path = settings.preproccessor_path
+
+parser = SP500Parser()
+
+regressor = FinancialPredictor(regressor_path=regressor_path,
+                               preprocessor_path=preprocessor_path)
 
 router = APIRouter(prefix="/predictor", tags=["Predictor"])
 
-regressor_path = pathlib.Path(Config.REGRESSOR_PATH).resolve()
-preprocessor_path = pathlib.Path(Config.PREPROCESSOR_PATH).resolve()
-
-parser = SP500Parser()
-regressor = FinancialPredictor(regressor_path, preprocessor_path)
-
-
-@router.post("/predict_weekly_return", summary="Predict Weekly Return for Single Ticker")
+@router.post(
+    "/predict_weekly_return", summary="Predict Weekly Return for Single Ticker"
+)
+@cache(expire=3600)
 async def predict_weekly_return(ticker: str):
     """
     Predict the weekly return for a given ticker within the specified date range.
@@ -42,7 +45,10 @@ async def predict_weekly_return(ticker: str):
     return {"ticker": ticker, "predicted_weekly_return": weekly_return[0]}
 
 
-@router.post("/predict_weekly_return_batch", summary="Predict Weekly Return for Batch of Tickers")
+@router.post(
+    "/predict_weekly_return_batch", summary="Predict Weekly Return for Batch of Tickers"
+)
+@cache(expire=3600)
 async def predict_weekly_return_batch(tickers: List[str]):
     """
     Predict the weekly return for a batch of tickers within the specified date range.

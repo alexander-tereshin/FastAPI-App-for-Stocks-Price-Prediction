@@ -1,10 +1,6 @@
 import pickle
-import pathlib
-import sys
-
 from catboost import CatBoostRegressor
-
-from app.config import Config
+from app.config import settings
 
 
 class FinancialPredictor:
@@ -20,7 +16,6 @@ class FinancialPredictor:
 
 
 if __name__ == "__main__":
-    regressor_path = pathlib.Path(Config.REGRESSOR_PATH).resolve()
-    preprocessor_path = pathlib.Path(Config.PREPROCESSOR_PATH).resolve()
+    regressor_path = settings.regressor_path
+    preprocessor_path = settings.preproccessor_path
     regressor = FinancialPredictor(regressor_path, preprocessor_path)
-    

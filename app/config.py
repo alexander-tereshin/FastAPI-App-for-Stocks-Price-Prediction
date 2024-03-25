@@ -1,10 +1,18 @@
-from dotenv import load_dotenv
-import os
+import pathlib
 
-load_dotenv()
+from pydantic import Field, RedisDsn
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-class Config:
-    REGRESSOR_PATH = "app/models/financial_data_only.cbm"
-    PREPROCESSOR_PATH = "app/models/preprocessor_pipeline.pkl"
-    
+ROOT_PATH: pathlib.Path = (pathlib.Path(__file__).resolve().parent.parent)
+APP_PATH: pathlib.Path = (pathlib.Path(__file__).resolve().parent)
+
+
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=str(ROOT_PATH/".env"), env_file_encoding='utf-8')
+    redis_dsn: RedisDsn = Field(default='redis://user:pass@localhost:6379/1')
+    regressor_path: str = Field(default=str(APP_PATH/"models/financial_data_only.cbm"))
+    preproccessor_path: str = Field(default=str(APP_PATH/"models/preprocessor_pipeline.pkl"))
+
+
+settings = Settings(_env_file='.env', _env_file_encoding='utf-8')
