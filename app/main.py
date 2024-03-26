@@ -12,7 +12,7 @@ from app.predictor.predict_router import router as predict_router
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     redis = aioredis.from_url(
-        str(settings.redis_dsn),
+        settings.redis_dsn.unicode_string(),
         encoding="utf8",
         decode_responses=True,
     )
@@ -41,5 +41,5 @@ async def root():
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8000, log_level="debug")
+    uvicorn.run(app, host="0.0.0.0", port=settings.app_port, log_level="debug")
     

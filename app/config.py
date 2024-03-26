@@ -13,6 +13,6 @@ class Settings(BaseSettings):
     redis_dsn: RedisDsn = Field(default='redis://user:pass@localhost:6379/1')
     regressor_path: str = Field(default=str(APP_PATH/"models/financial_data_only.cbm"))
     preproccessor_path: str = Field(default=str(APP_PATH/"models/preprocessor_pipeline.pkl"))
-
+    app_port: int = Field(default=8000)
 
 settings = Settings(_env_file='.env', _env_file_encoding='utf-8')

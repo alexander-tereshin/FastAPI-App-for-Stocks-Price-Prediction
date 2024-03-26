@@ -20,4 +20,6 @@ COPY /app /app/app
 
 ENV PYTHOPATH="/app:$PYTHONPATH"
 
-CMD ["poetry", "run", "uvicorn", "app.main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
+ENV APP_PORT=8000
+
+CMD ["poetry", "run", "uvicorn", "app.main:app", "--reload", "--host", "0.0.0.0", "--port", "${APP_PORT}"]
