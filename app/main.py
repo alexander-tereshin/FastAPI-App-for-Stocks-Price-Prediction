@@ -20,7 +20,7 @@ async def lifespan(app: FastAPI):
         FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
         yield
     finally:
-        FastAPICache.clear()
+        await FastAPICache.clear()
         await redis.close()
 
 
@@ -42,4 +42,3 @@ if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(app, host="0.0.0.0", port=settings.app_port, log_level="debug")
-    
