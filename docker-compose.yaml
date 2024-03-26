@@ -16,7 +16,8 @@ services:
       - "./app:/app/app"
   redis:
     container_name: redis_cache
-    image: redis:alpine
+    image: redis:7
     restart: on-failure
+    command: --port ${REDIS_PORT:-6379}
     ports:
       - "${REDIS_EXTERNAL_PORT:-6379}:${REDIS_PORT:-6379}"

@@ -36,7 +36,6 @@ class SP500Parser:
             for row in table.findAll("tr")[1:]
         ]
         self.tickers.sort()
-
         return self.tickers
 
     def download_sp500_data(
@@ -54,19 +53,15 @@ class SP500Parser:
             self.get_sp500_tickers()
 
         data = yf.download(self.tickers, start=start_date, end=end_date, interval="1d")
-
         df = (
             data.stack()
             .reset_index()
-            .rename(index=str, columns={"level_1": "Ticker"})
+            .rename(index=str, columns={"level_1": "Symbol"})
             .sort_values(["Ticker", "Date"])
             .set_index("Date")
         )
-
-        df.rename(columns={"Ticker": "Symbol"}, inplace=True)
-
+        df.reset_index(inplace=True)
         self.data = df
-
         return self.data
 
     def download_custom_data(
@@ -81,16 +76,15 @@ class SP500Parser:
         Returns:
             pd.DataFrame: A DataFrame containing historical data for S&P 500 companies.
         """
-
         data = yf.download(
             custom_tickers, start=start_date, end=end_date, interval="1d"
         )
         if len(custom_tickers) > 1:
-            df = (
+            data = (
                 data.stack()
                 .reset_index()
                 .rename(index=str, columns={"level_1": "Symbol"})
-                .sort_values(["Symbol", "Date"])
+                .sort_values(["Ticker", "Date"])
                 .set_index("Date")
             )
         else:
@@ -110,15 +104,12 @@ class SP500Parser:
         group["20_day_MA"] = group["Close"].rolling(window=20).mean()
         group["5_day_volatility"] = group["Close"].rolling(window=5).std()
         group["momentum"] = group["Close"] - group["Close"].shift(1)
-
         macd = MACD(close=group["Close"], window_slow=26, window_fast=12, window_sign=9)
         group["MACD"] = macd.macd()
         group["MACD_signal"] = macd.macd_signal()
         group["MACD_histogram"] = macd.macd_diff()
-
         group["week_of_year"] = group.index.isocalendar().week
         group["month"] = group.index.month
-
         return group.dropna()
 
     def apply_features_to_stocks(self, stocks):

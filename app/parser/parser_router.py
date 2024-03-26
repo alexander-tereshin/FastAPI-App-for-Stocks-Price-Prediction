@@ -12,14 +12,14 @@ parser = SP500Parser()
 
 
 @router.get("/sp500_tickers")
-@cache(expire=3600)
+@cache(expire=30)
 async def get_sp500_tickers():
     """
     Retrieve the list of S&P 500 company tickers.
     """
     data = parser.get_sp500_tickers()
     return data
-
+    
 
 @router.get("/sp500_data")
 @cache(expire=3600)
@@ -36,7 +36,7 @@ async def get_sp500_data(start_date: date, end_date: date):
     """
 
     data = parser.download_sp500_data(start_date, end_date)
-    return data.to_dict()
+    return data
 
 
 @router.post("/custom")
